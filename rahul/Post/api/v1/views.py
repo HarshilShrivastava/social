@@ -178,7 +178,7 @@ def like(request,pk):
     context={}
     data={}
     obj=get_object_or_404(Post,pk=pk)
-    qs=Like.object.filter(Post=obj)
+    qs=Like.objects.filter(Post=obj)
     Profil=get_object_or_404(Profile,User=request.user)
     try:
         obj1=Like.objects.get(Profile=Profil,Post=obj)
@@ -186,6 +186,7 @@ def like(request,pk):
         obj1=Like.objects.create(Profile=Profil,Post=obj)
         context['sucess']=True
         context['status']=200
+        context['count']=qs.count()
         context['message']="sucessfully Unliked"
         context['data']=data
         return Response(context)

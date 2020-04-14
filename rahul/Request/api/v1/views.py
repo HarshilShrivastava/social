@@ -3,6 +3,7 @@ from Request.api.v1.serializer import(
     ConfirmedSerializer,
     ConfirmedReadSerializer,
     RequestSerializer,
+    RequestDSerializer,
     RequestReadSerializer
 )
 from Request.models import(

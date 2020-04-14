@@ -15,5 +15,5 @@ class Request(models.Model):
 class Confirmed(models.Model):
     Sender = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name="Sender")
     Receiver = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name="Receiver")
-    Timestamp= models.DateTimeField(blank=True, null=True)
-
+    Timestamp= models.DateTimeField(default=timezone.now)
+    
