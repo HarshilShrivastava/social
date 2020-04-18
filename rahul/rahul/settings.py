@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'Profile',
     'Request',
     'Post',
+    'extras',
 ]
 
 MIDDLEWARE = [

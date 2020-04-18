@@ -22,5 +22,6 @@ urlpatterns = [
     path('Profile/',include('Profile.api.v1.urls')),
     path('Post/',include('Post.api.v1.urls')),
     path('Request/',include('Request.api.v1.urls')),
+    path('extras/',include('extras.api.v1.urls'))
     
 ]
