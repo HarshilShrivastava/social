@@ -127,7 +127,7 @@ class StatusView(APIView):
         data={}
         if request.user.IS_CUSTOMER==1:
             serializer=StatusSerializer(data=request.data)
-            profileobj=get_object_or_404(Profile,User=request.user)
+            profileobj=get_object_or_404(Profile,User=request.user,Archived=False)
             if serializer.is_valid():
                 if serializer.is_valid():
                     obj=serializer.save(profile=profileobj)
@@ -171,8 +171,7 @@ class StatusView(APIView):
             context['message']=""
             context['data']=data
             return Response(context)
-        qs=Status.objects.filter(profile=profileobj, Timestamp=timezone.timedelta(days=1)
-)
+        qs=Status.objects.filter(profile=profileobj, Timestamp=timezone.timedelta(days=1),Archived=False)
 
         serializer=StatusReadSerializer(qs,many=True)
         context['sucess']=True
@@ -205,7 +204,7 @@ class StatusViewDetail(APIView):
             return Response(context)
         serializer=StatusSerializer(Statusobj,data=request.data)
         if serializer.is_valid():
-            obj=serializer.save(Profile=profileobj)
+            obj=serializer.save(Profile=profileobj,Archived=False)
             obj.save()
             context['status']=200
             context['sucess']=True
@@ -236,7 +235,8 @@ class StatusViewDetail(APIView):
             context['message']="does not exist"
             context['data']=data
             return Response(context)
-        Statusobj.delete()
+        Statusobj.Archived=True
+        Statusobj.save()
         context['status']=200
         context['sucess']=True
         context['message']="sucessfully updated"

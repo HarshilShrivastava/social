@@ -7,7 +7,7 @@ from Post.models import (
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model=Post
-        exclude=('id','Profile','Timestamp')
+        exclude=('id','Profile','Timestamp','Archived')
 
 class PostReadSerializer(serializers.ModelSerializer):
     selfProfile=serializers.SerializerMethodField('get_username')

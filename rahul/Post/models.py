@@ -10,6 +10,7 @@ class Post(models.Model):
     Image=models.ImageField( upload_to='media/Post/',null=True,blank=True)
     Video=models.FileField(upload_to='media/video/', max_length=100,null=True,blank=True)
     Timestamp=models.DateTimeField( auto_now_add=True)
+    Archived=models.BooleanField()
 
 class Like(models.Model):
     Post=models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -31,6 +32,7 @@ class Comment(models.Model):
     Comment=models.TextField()
     Timestamp=models.DateTimeField( auto_now_add=True)
     Parent = models.ForeignKey("self", null=True, blank=True,related_name='reply_set', on_delete=models.PROTECT)
+    Archived=models.BooleanField()
     #objects = CommentManager()
 
     class meta:

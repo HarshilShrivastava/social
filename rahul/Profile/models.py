@@ -23,4 +23,5 @@ class Status(models.Model):
     ImageField=models.ImageField(upload_to="media/status/Image",null=True,blank=True)
     VideoFields=models.FileField(upload_to="media/status/video",null=True,blank=True)
     Timestamp=models.DateTimeField(auto_now_add=True)
+    Archived=models.BooleanField()
     

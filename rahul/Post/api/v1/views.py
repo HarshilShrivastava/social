@@ -48,7 +48,7 @@ class PostView(APIView):
             serializer=PostSerializer(data=request.data)
             if serializer.is_valid():
                 User=get_object_or_404(Profile,User=request.user)
-                obj=serializer.save(Profile=User)
+                obj=serializer.save(Profile=User,Archived=False)
                 obj.save()
                 context['status']=200
                 context['sucess']=True
@@ -78,7 +78,7 @@ class PostView(APIView):
         data={}
         if request.user.IS_CUSTOMER==1:
             User=get_object_or_404(Profile,User=request.user)
-            qs=Post.objects.filter(Profile=User)
+            qs=Post.objects.filter(Profile=User,Archived=False)
             serializer=PostReadSerializer(qs,many=True)
             context['sucess']=True
             context['status']=200
@@ -101,7 +101,7 @@ class PostViewDetail(APIView):
             obj=get_object_or_404(Post,pk=pk)
             serializer=PostSerializer(obj,data=request.data)
             if serializer.is_valid():
-                serializer.save(Profile=User)
+                serializer.save(Profile=User,Archived=False)
                 context['sucess']=True
                 context['status']=200
                 context['message']="sucessfully updated"
@@ -153,13 +153,14 @@ class PostViewDetail(APIView):
                 try:
                     obj=get_object_or_404(Post,pk=pk)
                 except:
-                    obj.delete()
+                    
                     context['sucess']=False
                     context['status']=400
                     context['message']="can't delete"
                     context['data']=data
                     return Response(context)
-
+                obj.Archived=True
+                obj.save()
                 context['sucess']=True
                 context['status']=200
                 context['message']="sucessfully deleted"
@@ -227,6 +228,7 @@ def Commentlike(request,pk):
     return Response(context)
 
 
+
 class CommentView(APIView):
     permission_classes=[IsAuthenticated]
     authentication_classes=(TokenAuthentication,)
@@ -238,7 +240,7 @@ class CommentView(APIView):
             if serializer.is_valid():
                 User=get_object_or_404(Profile,User=request.user)
                 Postu=get_object_or_404(Post,pk=pk)
-                obj=serializer.save(Profile=User,Post=Postu)
+                obj=serializer.save(Profile=User,Post=Postu,Archived=False)
                 obj.save()
                 context['status']=200
                 context['sucess']=True
@@ -266,12 +268,7 @@ class CommentView(APIView):
         data={}
         if request.user.IS_CUSTOMER==1:
             Poste=get_object_or_404(Post,pk=pk)
-            qs=Comment.objects.filter(Post=Poste,Parent=None)
-        
-
-
-
-
+            qs=Comment.objects.filter(Post=Poste,Parent=None,Archived=False)
             serializer=CommentReadSerializer(qs,many=True)
             context['sucess']=True
             context['status']=200
@@ -293,7 +290,7 @@ class CommentViewDetail(APIView):
             if serializer.is_valid():
                 User=get_object_or_404(Profile,User=request.user)
                 Postobj=get_object_or_404(Post,pk=pk)
-                obj=serializer.save(Profile=User,Post=Postobj)
+                obj=serializer.save(Profile=User,Post=Postobj,Archived=False)
                 obj.save()
                 context['status']=200
                 context['sucess']=True
@@ -325,10 +322,13 @@ class CommentViewDetail(APIView):
             
             try:
                 Commentobj=get_object_or_404(Comment,pk=id)
-                Commentobj.delete()
+                Commentobj.Comment='[ Comment Deleted ]'
+                Commentobj.save()
+
             except:
                 context['status']=400
                 context['sucess']=False
+
                 context['message']="can't delete  "
                 context['data']=data
                 return Response(context)
