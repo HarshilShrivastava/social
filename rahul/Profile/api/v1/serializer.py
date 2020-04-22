@@ -1,5 +1,8 @@
 from rest_framework import serializers 
-from Profile.models import Profile
+from Profile.models import (
+    Profile,
+    Status
+)
 class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -14,3 +17,15 @@ class ProfileReadSerializer(serializers.ModelSerializer):
     def get_username(self,info):
         data=info.User.username
         return data
+
+class StatusSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Status
+        fields = ['TextField','Descreption','ImageField','VideoFields' ]
+
+class StatusReadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Status
+        fields = '__all__' 

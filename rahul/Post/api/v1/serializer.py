@@ -21,9 +21,16 @@ class PostReadSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Comment
-        fields=['Comment']
+        fields=['Comment','Parent']
+
+class RecursiveSerializer(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
 
 class CommentReadSerializer(serializers.ModelSerializer):
+    reply_set = RecursiveSerializer(many=True, read_only=True)
+
     class Meta:
-        model=Comment
-        fields='__all__'
+        model = Comment
+        fields = ('id', 'Timestamp', 'Comment', 'Parent', 'reply_set')

@@ -1,7 +1,8 @@
 from Post.models import (
     Post,
     Like,
-    Comment
+    Comment,
+    CommentLike
 )
 from rest_framework.response import Response
 from rest_framework import status
@@ -171,7 +172,7 @@ class PostViewDetail(APIView):
                 context['data']=data
                 return Response(context)
 
-#api for like and unlike
+#api for post to like and unlike
 @api_view(['POST',])
 @permission_classes((IsAuthenticated, ))
 def like(request,pk):
@@ -197,6 +198,34 @@ def like(request,pk):
     context['message']="sucessfully liked"
     context['data']=data
     return Response(context)
+
+#api for post to like and unlike
+@api_view(['POST',])
+@permission_classes((IsAuthenticated, ))
+def Commentlike(request,pk):
+    context={}
+    data={}
+    obj=get_object_or_404(Comment,pk=pk)
+    qs=CommentLike.objects.filter(Comment=obj)
+    Profil=get_object_or_404(Profile,User=request.user)
+    try:
+        obj1=CommentLike.objects.get(Profile=Profil,Comment=obj)
+    except:
+        obj1=Like.objects.create(Profile=Profil,Comment=obj)
+        context['sucess']=True
+        context['status']=200
+        context['count']=qs.count()
+        context['message']="sucessfully Unliked"
+        context['data']=data
+        return Response(context)
+    obj1.delete()
+    context['sucess']=True
+    context['count']=qs.count()
+    context['status']=200
+    context['message']="sucessfully liked"
+    context['data']=data
+    return Response(context)
+
 
 class CommentView(APIView):
     permission_classes=[IsAuthenticated]
@@ -237,7 +266,12 @@ class CommentView(APIView):
         data={}
         if request.user.IS_CUSTOMER==1:
             Poste=get_object_or_404(Post,pk=pk)
-            qs=Comment.objects.filter(Post=Poste)
+            qs=Comment.objects.filter(Post=Poste,Parent=None)
+        
+
+
+
+
             serializer=CommentReadSerializer(qs,many=True)
             context['sucess']=True
             context['status']=200
@@ -308,4 +342,4 @@ class CommentViewDetail(APIView):
 
 
 
-    
+
